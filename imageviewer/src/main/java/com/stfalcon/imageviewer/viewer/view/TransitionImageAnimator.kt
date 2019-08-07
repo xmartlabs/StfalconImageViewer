@@ -24,6 +24,7 @@ import android.widget.ImageView
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
+import com.stfalcon.imageviewer.R
 import com.stfalcon.imageviewer.common.extensions.addListener
 import com.stfalcon.imageviewer.common.extensions.applyMargin
 import com.stfalcon.imageviewer.common.extensions.globalVisibleRect
@@ -44,7 +45,7 @@ internal class TransitionImageAnimator(
         private const val TRANSITION_DURATION_OPEN = 200L
         private const val TRANSITION_DURATION_CLOSE = 250L
     }
-
+    private val initAnimationMargin = internalImage.context.resources.getDimension(R.dimen.stf_init_margin).toInt()
     internal var isAnimating = false
 
     private var isClosing = false
@@ -125,12 +126,12 @@ internal class TransitionImageAnimator(
         externalImage?.let {
             if (externalImage.isRectVisible) {
                 with(externalImage.localVisibleRect) {
-                    internalImage.requestNewSize(it.width, it.height)
-                    internalImage.applyMargin(top = -top, start = -left)
+                    internalImage.requestNewSize(it.width + initAnimationMargin, it.height + initAnimationMargin)
+                    internalImage.applyMargin(top = -top - initAnimationMargin / 2, start = -left - initAnimationMargin / 2)
                 }
                 with(externalImage.globalVisibleRect) {
-                    internalImageContainer.requestNewSize(width(), height())
-                    internalImageContainer.applyMargin(left, top, right, bottom)
+                    internalImageContainer.requestNewSize(width() + initAnimationMargin, height()  + initAnimationMargin)
+                    internalImageContainer.applyMargin(left  , top , right, bottom )
                 }
             }
 

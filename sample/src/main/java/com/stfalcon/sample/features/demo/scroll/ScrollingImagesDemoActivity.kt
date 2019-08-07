@@ -1,5 +1,6 @@
 package com.stfalcon.sample.features.demo.scroll
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -61,7 +62,7 @@ class ScrollingImagesDemoActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun loadImage(imageView: ImageView, url: String?) {
+    private fun loadImage(imageView: ImageView, url: String?, initImage: Drawable? = null) {
         imageView.apply {
             background = getDrawableCompat(R.drawable.shape_placeholder)
             loadImage(url)

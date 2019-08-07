@@ -17,6 +17,7 @@
 package com.stfalcon.imageviewer.viewer.view
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
@@ -48,6 +49,7 @@ import com.stfalcon.imageviewer.common.gestures.dismiss.SwipeToDismissHandler
 import com.stfalcon.imageviewer.common.pager.MultiTouchViewPager
 import com.stfalcon.imageviewer.loader.ImageLoader
 import com.stfalcon.imageviewer.viewer.adapter.ImagesPagerAdapter
+import java.lang.ref.WeakReference
 
 internal class ImageViewerView<T> @JvmOverloads constructor(
     context: Context,
@@ -91,6 +93,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     private val transitionImageContainer: FrameLayout
     private val transitionImageView: ImageView
     private var externalTransitionImageView: ImageView? = null
+    private var externalOriginalDrawable: Drawable? = null
 
     private var imagesPager: MultiTouchViewPager
     private var imagesAdapter: ImagesPagerAdapter<T>? = null
@@ -189,9 +192,12 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
         prepareViewsForTransition()
 
         externalTransitionImageView = transitionImageView
+        externalOriginalDrawable = transitionImageView?.drawable
 
-        imageLoader?.loadImage(this.transitionImageView, images[startPosition])
         this.transitionImageView.copyBitmapFrom(transitionImageView)
+        val initImage = images[startPosition]
+        imageLoader?.loadImage(this.transitionImageView, initImage,  this.transitionImageView.drawable)
+        imagesAdapter?.initImage = WeakReference( initImage to this.transitionImageView.drawable)
 
         transitionImageAnimator = createTransitionImageAnimator(transitionImageView)
         swipeDismissHandler = createSwipeToDismissHandler()
@@ -220,7 +226,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
         externalTransitionImageView = imageView
         startPosition = currentPosition
         transitionImageAnimator = createTransitionImageAnimator(imageView)
-        imageLoader?.loadImage(transitionImageView, images[startPosition])
+        imageLoader?.loadImage(transitionImageView, images[startPosition], transitionImageView.drawable)
     }
 
     internal fun resetScale() {
@@ -258,6 +264,8 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     private fun prepareViewsForViewer() {
         transitionImageContainer.makeGone()
         imagesPager.makeVisible()
+        externalTransitionImageView?.setImageDrawable(externalOriginalDrawable)
+        externalOriginalDrawable = null
     }
 
     private fun handleTouchIfNotScaled(event: MotionEvent): Boolean {

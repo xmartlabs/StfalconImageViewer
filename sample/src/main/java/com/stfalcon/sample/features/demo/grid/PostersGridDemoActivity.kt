@@ -1,5 +1,6 @@
 package com.stfalcon.sample.features.demo.grid
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,10 @@ class PostersGridDemoActivity : AppCompatActivity() {
     }
 
     private fun loadPosterImage(imageView: ImageView, poster: Poster?) {
+        loadPosterImage(imageView, poster, null)
+    }
+
+    private fun loadPosterImage(imageView: ImageView, poster: Poster?, initImage: Drawable? = null) {
         imageView.apply {
             background = getDrawableCompat(R.drawable.shape_placeholder)
             loadImage(poster?.url)

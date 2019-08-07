@@ -16,7 +16,10 @@
 
 package com.stfalcon.imageviewer.loader;
 
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 
 /**
  * Interface definition for a callback to be invoked when image should be loaded
@@ -30,5 +33,5 @@ public interface ImageLoader<T> {
      * @param imageView an {@link ImageView} object where the image should be loaded
      * @param image     image data from which image should be loaded
      */
-    void loadImage(ImageView imageView, T image);
+    void loadImage(ImageView imageView, T image, @Nullable Drawable initImage);
 }

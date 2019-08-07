@@ -17,12 +17,14 @@
 package com.stfalcon.imageviewer.viewer.adapter
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import com.github.chrisbanes.photoview.PhotoView
 import com.stfalcon.imageviewer.common.extensions.resetScale
 import com.stfalcon.imageviewer.common.pager.RecyclingPagerAdapter
 import com.stfalcon.imageviewer.loader.ImageLoader
+import java.lang.ref.WeakReference
 
 internal class ImagesPagerAdapter<T>(
     private val context: Context,
@@ -33,6 +35,7 @@ internal class ImagesPagerAdapter<T>(
 
     private var images = _images
     private val holders = mutableListOf<ViewHolder>()
+    var initImage: WeakReference<Pair<T, Drawable>>? = null
 
     fun isScaled(position: Int): Boolean =
         holders.firstOrNull { it.position == position }?.isScaled ?: false
@@ -68,7 +71,9 @@ internal class ImagesPagerAdapter<T>(
 
         fun bind(position: Int) {
             this.position = position
-            imageLoader.loadImage(photoView, images[position])
+            val image = images[position]
+            val initDrawable = if (initImage?.get()?.first == image) initImage?.get()?.second else null
+            imageLoader.loadImage(photoView, image, initDrawable)
         }
 
         fun resetScale() = photoView.resetScale(animate = true)
