@@ -101,7 +101,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     private var directionDetector: SwipeDirectionDetector
     private var gestureDetector: GestureDetectorCompat
     private var scaleDetector: ScaleGestureDetector
-    private lateinit var swipeDismissHandler: SwipeToDismissHandler
+    private var swipeDismissHandler: SwipeToDismissHandler? = null
 
     private var wasScaled: Boolean = false
     private var wasDoubleTapped = false
@@ -208,7 +208,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
 
     internal fun close() {
         if (shouldDismissToBottom) {
-            swipeDismissHandler.initiateDismissToBottom()
+            swipeDismissHandler?.initiateDismissToBottom()
         } else {
             animateClose()
         }
@@ -274,7 +274,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
         return when (swipeDirection) {
             UP, DOWN -> {
                 if (isSwipeToDismissAllowed && !wasScaled && imagesPager.isIdle) {
-                    swipeDismissHandler.onTouch(rootContainer, event)
+                    swipeDismissHandler?.onTouch(rootContainer, event) == true
                 } else true
             }
             LEFT, RIGHT -> {
@@ -302,13 +302,13 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
         wasScaled = false
         imagesPager.dispatchTouchEvent(event)
 
-        swipeDismissHandler.onTouch(rootContainer, event)
+        swipeDismissHandler?.onTouch(rootContainer, event)
         isOverlayWasClicked = dispatchOverlayTouch(event)
     }
 
     private fun handleEventActionUp(event: MotionEvent) {
         wasDoubleTapped = false
-        swipeDismissHandler.onTouch(rootContainer, event)
+        swipeDismissHandler?.onTouch(rootContainer, event)
         imagesPager.dispatchTouchEvent(event)
         isOverlayWasClicked = dispatchOverlayTouch(event)
     }
