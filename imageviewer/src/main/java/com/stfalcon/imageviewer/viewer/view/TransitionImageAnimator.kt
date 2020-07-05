@@ -25,20 +25,13 @@ import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.stfalcon.imageviewer.R
-import com.stfalcon.imageviewer.common.extensions.addListener
-import com.stfalcon.imageviewer.common.extensions.applyMargin
-import com.stfalcon.imageviewer.common.extensions.globalVisibleRect
-import com.stfalcon.imageviewer.common.extensions.isRectVisible
-import com.stfalcon.imageviewer.common.extensions.localVisibleRect
-import com.stfalcon.imageviewer.common.extensions.makeViewMatchParent
-import com.stfalcon.imageviewer.common.extensions.postApply
+import com.stfalcon.imageviewer.common.extensions.*
 import com.stfalcon.imageviewer.common.extensions.postDelayed
-import com.stfalcon.imageviewer.common.extensions.requestNewSize
 
 internal class TransitionImageAnimator(
-    private val externalImage: ImageView?,
-    private val internalImage: ImageView,
-    private val internalImageContainer: FrameLayout
+        private val externalImage: ImageView?,
+        private val internalImage: ImageView,
+        private val internalImageContainer: FrameLayout
 ) {
 
     companion object {
@@ -57,9 +50,9 @@ internal class TransitionImageAnimator(
         get() = internalImageContainer.parent as ViewGroup
 
     internal fun animateOpen(
-        containerPadding: IntArray,
-        onTransitionStart: (Long) -> Unit,
-        onTransitionEnd: () -> Unit
+            containerPadding: IntArray,
+            onTransitionStart: (Long) -> Unit,
+            onTransitionEnd: () -> Unit
     ) {
         if (externalImage.isRectVisible) {
             onTransitionStart(TRANSITION_DURATION_OPEN)
@@ -70,9 +63,9 @@ internal class TransitionImageAnimator(
     }
 
     internal fun animateClose(
-        shouldDismissToBottom: Boolean,
-        onTransitionStart: (Long) -> Unit,
-        onTransitionEnd: () -> Unit
+            shouldDismissToBottom: Boolean,
+            onTransitionStart: (Long) -> Unit,
+            onTransitionEnd: () -> Unit
     ) {
         if (externalImage.isRectVisible && !shouldDismissToBottom) {
             onTransitionStart(TRANSITION_DURATION_CLOSE)
@@ -102,10 +95,10 @@ internal class TransitionImageAnimator(
             internalImage.makeViewMatchParent()
 
             internalRoot.applyMargin(
-                containerPadding[0],
-                containerPadding[1],
-                containerPadding[2],
-                containerPadding[3])
+                    containerPadding[0],
+                    containerPadding[1],
+                    containerPadding[2],
+                    containerPadding[3])
 
             internalImageContainer.requestLayout()
         }
@@ -116,7 +109,7 @@ internal class TransitionImageAnimator(
         isClosing = true
 
         TransitionManager.beginDelayedTransition(
-            internalRoot, createTransition { handleCloseTransitionEnd(onTransitionEnd) })
+                internalRoot, createTransition { handleCloseTransitionEnd(onTransitionEnd) })
 
         prepareTransitionLayout()
         internalImageContainer.requestLayout()
@@ -141,21 +134,21 @@ internal class TransitionImageAnimator(
 
     private fun handleCloseTransitionEnd(onTransitionEnd: () -> Unit) {
         externalImage?.visibility = View.VISIBLE
-        externalImage?.post { onTransitionEnd() }
+        internalImage.post { onTransitionEnd() }
         isAnimating = false
     }
 
     private fun resetRootTranslation() {
         internalRoot
-            .animate()
-            .translationY(0f)
-            .setDuration(transitionDuration)
-            .start()
+                .animate()
+                .translationY(0f)
+                .setDuration(transitionDuration)
+                .start()
     }
 
     private fun createTransition(onTransitionEnd: (() -> Unit)? = null): Transition =
-        AutoTransition()
-            .setDuration(transitionDuration)
-            .setInterpolator(DecelerateInterpolator())
-            .addListener(onTransitionEnd = { onTransitionEnd?.invoke() })
+            AutoTransition()
+                    .setDuration(transitionDuration)
+                    .setInterpolator(DecelerateInterpolator())
+                    .addListener(onTransitionEnd = { onTransitionEnd?.invoke() })
 }

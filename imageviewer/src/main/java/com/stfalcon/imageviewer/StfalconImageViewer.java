@@ -68,10 +68,17 @@ public class StfalconImageViewer<T> {
     }
 
     /**
-     * Dismisses the viewer
+     * Closes the viewer with suitable close animation
+     */
+    public void close() {
+        dialog.close();
+    }
+
+    /**
+     * Dismisses the dialog with no animation
      */
     public void dismiss() {
-        dialog.close();
+        dialog.dismiss();
     }
 
     /**
@@ -94,6 +101,10 @@ public class StfalconImageViewer<T> {
 
     public int currentPosition() {
         return dialog.getCurrentPosition();
+    }
+
+    public int setCurrentPosition(int position){
+        return dialog.setCurrentPosition(position);
     }
 
     /**

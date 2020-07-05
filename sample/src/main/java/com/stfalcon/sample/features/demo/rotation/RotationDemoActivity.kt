@@ -32,6 +32,11 @@ class RotationDemoActivity : AppCompatActivity() {
         loadPosterImage(rotationDemoImage, Demo.posters[0])
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewer.dismiss()
+    }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         if (savedInstanceState != null) {

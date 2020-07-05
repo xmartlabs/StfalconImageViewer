@@ -155,7 +155,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
             return true
         }
 
-        if (transitionImageAnimator.isAnimating) {
+        if (!this::transitionImageAnimator.isInitialized || transitionImageAnimator.isAnimating) {
             return true
         }
 
@@ -262,6 +262,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     }
 
     private fun prepareViewsForViewer() {
+        backgroundView.alpha = 1f
         transitionImageContainer.makeGone()
         imagesPager.makeVisible()
         externalTransitionImageView?.setImageDrawable(externalOriginalDrawable)
